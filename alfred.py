@@ -21,6 +21,12 @@ app.config.from_envvar('FLASKR_SETTINGS', silent=True) # To use, initialize env 
 def rand_ascii(size=24, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
+def connect_db():
+    """Connects to the specific database."""
+    rv = sqlite3.connect(app.config['DATABASE'])
+    rv.row_factory = sqlite3.Row
+    return rv
+
 @app.route('/logout', methods=['POST'])
 def logout():
     error = None
