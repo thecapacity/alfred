@@ -14,7 +14,7 @@ app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'alfred.db'),
     USERNAME='admin',
     PASSWORD='default'
-))
+)) ## VARS must be UPPERCASE
 app.config.from_envvar('FLASKR_SETTINGS', silent=True) # To use, initialize env var to config file
 
 def rand_ascii(size=24, chars=string.ascii_uppercase + string.digits):
