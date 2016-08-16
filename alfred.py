@@ -6,6 +6,15 @@ import json, string, random
 from flask import Flask, flash, jsonify, render_template, request, session, redirect, url_for, make_response, escape
 
 app = Flask(__name__)
+app.config.from_object(__name__)
+
+# Load default config and override config from an environment variable
+app.config.update(dict(
+    DATABASE=os.path.join(app.root_path, 'alfred.db'),
+    USERNAME='admin',
+    PASSWORD='default'
+))
+app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 def rand_ascii(size=24, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
