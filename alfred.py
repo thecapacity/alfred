@@ -10,9 +10,44 @@ app = Flask(__name__)
 def rand_ascii(size=24, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
+@app.route('/logout', methods=['POST'])
+def logout():
+    error = None
+
+    flash('You were successfully logged out', 'info')
+    resp = redirect(url_for('index'))
+    resp.set_cookie('username', '', expires=0)
+    return resp
+
+@app.route('/login', methods=['POST'])
+def login():
+    error = None
+
+    if request.method == 'POST':
+        ## Presently not validating auth
+        print request.form['username'], request.form['password']
+
+        flash('You were successfully logged in', 'info')
+        resp = redirect(url_for('index'))
+        resp.set_cookie('username', escape( request.form['username']) )
+        # Or: session['username'] = request.form['username']
+
+        return resp
+
+    return render_template('index.html', error="Invalid username/password")
+
 @app.route("/")
 def index():
-    return render_template ('index.html')
+    data = { }
+
+    data['username'] = request.cookies.get('username')
+    print "Username:", data['username']
+
+    #resp = make_response( render_template('index.html', data=data) )
+    #resp.set_cookie('username', '', expires=0)
+    #return resp
+
+    return render_template('index.html', data=data)
 
 if __name__ == "__main__":
 
