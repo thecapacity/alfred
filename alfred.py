@@ -7,7 +7,7 @@ import json, string, random
 from flask import Flask, flash, jsonify, render_template, request, session, redirect, url_for, make_response, escape
 
 app = Flask(__name__)
-app.config.from_object(__name__)
+app.config.from_object(__name__) ## TODO: Not sure where this pulls from
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
