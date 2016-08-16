@@ -7,6 +7,8 @@ import tempfile
 
 class Alfred(unittest.TestCase):
 
+    """ Look here for more information: http://flask.pocoo.org/docs/0.11/testing/ """
+
     def setUp(self):
         self.app = alfred.app.test_client()
 
