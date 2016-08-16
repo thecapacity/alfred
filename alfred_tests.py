@@ -3,11 +3,9 @@ import alfred
 import unittest
 import tempfile
 
-""" Guidance from: http://flask.pocoo.org/docs/0.11/testing/#testing """
+""" Guidance from: http://flask.pocoo.org/docs/0.11/testing/ """
 
 class Alfred(unittest.TestCase):
-
-    """ Look here for more information: http://flask.pocoo.org/docs/0.11/testing/ """
 
     def setUp(self):
         self.app = alfred.app.test_client()
