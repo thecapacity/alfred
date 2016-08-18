@@ -1,0 +1,15 @@
+{# https://gist.github.com/sevennineteen/4400462 #}
+
+{# http://stackoverflow.com/questions/34077761/what-is-the-difference-between-jsonify-and-tojson-in-flask #}
+<ul class=entries>
+{% for entry in entries %}
+<li>
+    <h2>{{ entry.title }}</h2>{{ entry.text|safe }}
+    {{ entry|tojson }}
+</li>
+{% else %}
+<li>
+    <em>Unbelievable.  No entries here so far</em>
+</li>
+{% endfor %}
+</ul>
