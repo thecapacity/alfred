@@ -5,7 +5,7 @@ import os
 import datetime
 import sqlite3
 import json, string, random
-from flask import Flask, flash, jsonify, render_template, request, session, redirect, url_for, make_response, escape
+from flask import Flask, flash, jsonify, render_template, request, session, redirect, url_for, make_response, escape, g, abort
 
 app = Flask(__name__)
 app.config.from_object(__name__) ## TODO: Not sure where this pulls from
