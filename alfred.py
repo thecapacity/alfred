@@ -23,6 +23,26 @@ app.config.from_envvar('FLASKR_SETTINGS', silent=True) # To use, initialize env 
 def rand_ascii(size=24, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
+def query_db(query, args=(), one=False):
+    """ Sample Usage:
+
+    for user in query_db('select * from users'):
+        print user['username'], 'has the id', user['user_id']
+
+    # Or if you just want a single result:
+    user = query_db('select * from users where username = ?',
+                    [the_username], one=True)
+    if user is None:
+        print 'No such user'
+    else:
+        print the_username, 'has the id', user['user_id']
+
+        cur = get_db().execute(query, args)
+        rv = cur.fetchall()
+        cur.close()
+        return (rv[0] if rv else None) if one else rv
+    """
+
 def connect_db():
     """ Connects to the specific database
     """
