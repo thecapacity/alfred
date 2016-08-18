@@ -58,6 +58,13 @@ def get_db():
         g.sqlite_db = connect_db()
     return g.sqlite_db
 
+@app.teardown_appcontext
+def close_db(error):
+    """ Closes the database again at the end of the request
+    """
+    if hasattr(g, 'sqlite_db') and os.path.isfile( app.config['DATABASE'] ):
+        g.sqlite_db.close()
+
 def init_db():
     db = get_db()
     with app.open_resource('schema.sql', mode='r') as f:
