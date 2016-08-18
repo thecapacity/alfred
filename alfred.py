@@ -42,6 +42,16 @@ def initdb_command():
     init_db()
     print 'Initialized the database.'
 
+@app.cli.command('dropdb')
+def dropdb_command():
+    """Drop the database."""
+    try:
+        os.remove( app.config['DATABASE'] )
+        print 'Deleted the database.'
+    except:
+        print 'Error deleting', app.config['DATABASE']
+        pass
+
 @app.route('/logout', methods=['POST'])
 def logout():
     error = None
