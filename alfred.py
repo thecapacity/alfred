@@ -43,6 +43,22 @@ def query_db(query, args=(), one=False):
         return (rv[0] if rv else None) if one else rv
     """
 
+@app.route('/entries', methods=['GET', 'POST'])
+def entries():
+    db = get_db()
+
+    if request.method == 'GET':
+        cur = db.execute('select * from links order by id desc')
+        entries = cur.fetchall()
+        return render_template('show_entries.html', entries=entries)
+    if request.method == 'POST':
+        db.execute('insert into links (title, url, time, tags, comment) values (?, ?, ?, ?, ?)',
+                    [ request.form['title'], request.form['url'], datetime.date.today(),
+                      request.form['tags'], request.form['comment'] ])
+        db.commit()
+        flash('New entry was successfully posted')
+        return redirect(url_for('/'))
+
 def connect_db():
     """ Connects to the specific database
     """
