@@ -36,6 +36,12 @@ def init_db():
         db.cursor().executescript(f.read())
     db.commit()
 
+@app.cli.command('initdb')
+def initdb_command():
+    """Initializes the database."""
+    init_db()
+    print 'Initialized the database.'
+
 @app.route('/logout', methods=['POST'])
 def logout():
     error = None
