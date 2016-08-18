@@ -13,8 +13,8 @@ app.config.from_object(__name__) ## TODO: Not sure where this pulls from
 # Load default config and override config from an environment variable
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'alfred.db'),
-    USERNAME='admin',
-    PASSWORD='default'
+    USERNAME='admin', ## Note these aren't currently used
+    PASSWORD='default' ## Note these aren't currently used
 )) ## VARS must be UPPERCASE
 app.config.from_envvar('FLASKR_SETTINGS', silent=True) # To use, initialize env var to config file
 ### TODO: Implement instance folders; http://flask.pocoo.org/docs/0.11/config/#instance-folders
