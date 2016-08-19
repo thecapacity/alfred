@@ -23,6 +23,7 @@ app.config.from_envvar('FLASKR_SETTINGS', silent=True) # To use, initialize env 
 def rand_ascii(size=24, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
+### TODO: NOT USED YET - maybe ever
 def query_db(query, args=(), one=False):
     """ Sample Usage:
 
@@ -89,13 +90,15 @@ def init_db():
 
 @app.cli.command('initdb')
 def initdb_command():
-    """Initializes the database."""
+    """ Initializes the database.
+    """
     init_db()
     print 'Initialized the database.'
 
 @app.cli.command('dropdb')
 def dropdb_command():
-    """Drop the database."""
+    """ Drop the database.
+    """
     try:
         os.remove( app.config['DATABASE'] )
         print 'Deleted the database.'
@@ -105,6 +108,9 @@ def dropdb_command():
 
 @app.route('/logout', methods=['POST'])
 def logout():
+    """ Logout User - by clearing cookie
+        Note: Maybe a session var should be used but woud prefer greater persistence
+    """
     error = None
 
     flash('You were successfully logged out', 'info')
@@ -114,6 +120,9 @@ def logout():
 
 @app.route('/login', methods=['POST'])
 def login():
+    """ Login the user - currently no auth execute
+    """
+    ## TODO: Eventually make this test something app.config maybe but OAuth better
     error = None
 
     if request.method == 'POST':
@@ -131,6 +140,8 @@ def login():
 
 @app.route("/")
 def index():
+    """ Load Index Page
+    """
     data = { }
 
     data['username'] = request.cookies.get('username')
@@ -146,6 +157,7 @@ if __name__ == "__main__":
 
     config = { }
 
+    ## TODO: Replace this with flask config loading
     try:
         with open('secret.json', 'r') as config_file:
             config = json.load(config_file)
