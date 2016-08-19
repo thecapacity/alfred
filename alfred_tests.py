@@ -16,5 +16,9 @@ class Alfred(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_index(self):
+        rv = self.app.get('/')
+        print rv
+
 if __name__ == '__main__':
     unittest.main()
