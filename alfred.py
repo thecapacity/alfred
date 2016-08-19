@@ -47,9 +47,10 @@ def entries():
     db = get_db()
 
     if request.method == 'GET':
-        cur = db.execute('select * from links order by id desc')
-        entries = cur.fetchall()
+        cur = query_db('select * from links order by id desc')
+        entries = [ dict(c) for c in cur ]
         return render_template('show_entries.html', entries=entries)
+
     if request.method == 'POST':
         db.execute('insert into links (title, url, time, tags, comment) values (?, ?, ?, ?, ?)',
                     [ request.form['title'], request.form['url'], datetime.date.today(),
