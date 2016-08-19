@@ -3,6 +3,7 @@
 
 import os
 import datetime
+## TODO: Use Jinja Filter for template formatting: http://jinja.pocoo.org/docs/dev/api/#custom-filters
 import sqlite3
 import json, string, random
 from flask import Flask, flash, jsonify, render_template, request, session, redirect, url_for, make_response, escape, g, abort
