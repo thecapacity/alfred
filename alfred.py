@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import datetime
 ## TODO: Use Jinja Filter for template formatting: http://jinja.pocoo.org/docs/dev/api/#custom-filters
 import sqlite3
@@ -51,6 +52,8 @@ def entries():
     if request.method == 'GET':
         cur = query_db('select * from links order by id desc')
         entries = [ dict(c) for c in cur ]
+        for e in entries:
+            e['tags'] = [t for t in re.split(r"[, ]", e['tags']) if t is not '']
         return render_template('show_entries.html', entries=entries)
 
     if request.method == 'POST':
