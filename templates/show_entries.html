@@ -1,15 +1,39 @@
+{% macro render_entry(link) %}
+    <div class="articleBlock" date="{{ link.date }}">
+        <h4 class="articleInfo">
+            <a href="{{ link.url }}" rel="nofollow">{{ link.title }}</a>
+        </h4>
+
+        <blockquote class="articleDesc">
+              <p>{{ link.comment }}</p>
+        </blockquote>
+
+        <ul class="tagNames list-inline">
+        {% for tag in link.tags %} 
+            <li><a href="http://del.icio.us/tatlow/{{ tag }}">{{ tag }}</a></li>
+        {% endfor %}
+        </ul>
+
+        <br>
+        <code>
+            {{ link|tojson }}
+        </code>
+    </div> <!-- end articleBlock--!>
+{% endmacro %}
+
 {# https://gist.github.com/sevennineteen/4400462 #}
 
 {# http://stackoverflow.com/questions/34077761/what-is-the-difference-between-jsonify-and-tojson-in-flask #}
 <ul class=entries>
 {% for entry in entries %}
-<li>
-    <h2>{{ entry.title }}</h2>{{ entry.text|safe }}
-    {{ entry|tojson }}
-</li>
-{% else %}
-<li>
-    <em>Unbelievable.  No entries here so far</em>
-</li>
+    <li>
+        <h2>{{ entry.title }}</h2>{{ entry.text|safe }}
+        {{ render_entry(entry) }}
+    </li>
+    {% else %}
+    <li>
+        <em>Unbelievable.  No entries here so far</em>
+        {{ entries }}
+    </li>
 {% endfor %}
 </ul>
