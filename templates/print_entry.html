@@ -1,0 +1,22 @@
+{% macro render_entry(link) %}
+    <div class="articleBlock" date="{{ link.date }}">
+        <h4 class="articleInfo">
+            <a href="{{ link.url }}" rel="nofollow">{{ link.title }}</a>
+        </h4>
+
+        <blockquote class="articleDesc">
+              <p>{{ link.comment }}</p>
+        </blockquote>
+
+        <ul class="tagNames list-inline">
+        {% for tag in link.tags %} 
+            <li><a href="http://del.icio.us/tatlow/{{ tag }}">{{ tag }}</a></li>
+        {% endfor %}
+        </ul>
+
+        <br>
+        <code>
+            {{ link|tojson }}
+        </code>
+    </div> <!-- end articleBlock--!>
+{% endmacro %}
