@@ -47,7 +47,6 @@ def query_db(query, args=(), one=False):
 
 @app.route('/entries', methods=['GET', 'POST'])
 def entries():
-    db = get_db()
 
     if request.method == 'GET':
         cur = query_db('select * from links order by id desc')
