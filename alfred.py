@@ -45,7 +45,7 @@ def query_db(query, args=(), one=False):
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
-@app.route('/entries', methods=['GET', 'POST'])
+@app.route('/entries', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def entries():
 
     if request.method == 'GET':
@@ -55,13 +55,18 @@ def entries():
             e['tags'] = [t for t in re.split(r"[, ]", e['tags']) if t is not '']
         return render_template('show_entries.html', entries=entries)
 
-    if request.method == 'POST':
+    elif request.method == 'POST' or request.method == 'PUT': # Not strictly correct
         db.execute('insert into links (title, url, time, tags, comment) values (?, ?, ?, ?, ?)',
                     [ request.form['title'], request.form['url'], datetime.date.today(),
                       request.form['tags'], request.form['comment'] ])
         db.commit()
         flash('New entry was successfully posted')
         return redirect(url_for('/'))
+    elif request.method == 'DELETE':
+        abort(501)
+    else: ## Something bad happend
+        app.logger.error("Entries: HOW DID WE GET HERE?")
+        abort(500)
 
 def connect_db():
     """ Connects to the specific database
