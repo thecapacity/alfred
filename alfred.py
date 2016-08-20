@@ -163,9 +163,6 @@ def index():
     data['username'] = request.cookies.get('username')
     app.logger.debug('%s accessing /' % (data['username']) )
 
-    #resp = make_response( render_template('index.html', data=data) )
-    #resp.set_cookie('username', '', expires=0)
-    #return resp
 
     return render_template('index.html', data=data)
 
