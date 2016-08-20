@@ -101,7 +101,7 @@ def initdb_command():
     """ Initializes the database.
     """
     init_db()
-    print 'Initialized the database.'
+    app.logger.debug('Initialized the database.')
 
 @app.cli.command('dropdb')
 def dropdb_command():
@@ -109,9 +109,9 @@ def dropdb_command():
     """
     try:
         os.remove( app.config['DATABASE'] )
-        print 'Deleted the database.'
+        app.logger.debug('Deleted the database.')
     except:
-        print 'Error deleting', app.config['DATABASE']
+        app.logger.error('Error deleting %s' % (app.config['DATABASE']) )
         pass
 
 @app.route('/logout', methods=['POST'])
@@ -135,7 +135,9 @@ def login():
 
     if request.method == 'POST':
         ## Presently not validating auth
-        print request.form['username'], request.form['password']
+        user = request.form['username']
+        pw = request.form['password']
+        app.logger.debug('%s (%s) logged in' % (user, pw) )
 
         flash('You were successfully logged in', 'info')
         resp = redirect(url_for('index'))
@@ -159,7 +161,7 @@ def index():
     data['links'] = entries
 
     data['username'] = request.cookies.get('username')
-    print "Username:", data['username']
+    app.logger.debug('%s accessing /' % (data['username']) )
 
     #resp = make_response( render_template('index.html', data=data) )
     #resp.set_cookie('username', '', expires=0)
@@ -176,11 +178,11 @@ if __name__ == "__main__":
         with open('secret.json', 'r') as config_file:
             config = json.load(config_file)
 
-        print "Config Loaded:", config
+        app.logger.debug("Config Loaded: %s" % config)
         app.secret_key = config['app_secret_key']
     except:
         app.secret_key = rand_ascii()
-        print "Auto Generated Secret:", app.secret_key
+        app.logger.debug("Auto Generated Secret: %s" % (app.secret_key))
 
         config['app_secret_key'] = app.secret_key
         with open('secret.json', 'w') as config_file:
