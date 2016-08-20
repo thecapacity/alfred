@@ -139,13 +139,17 @@ def login():
         pw = request.form['password']
         app.logger.debug('%s (%s) logged in' % (user, pw) )
 
-        flash('You were successfully logged in', 'info')
         resp = redirect(url_for('index'))
-        resp.set_cookie('username', escape( request.form['username']) )
-        # Or: session['username'] = request.form['username']
+        if (user == app.config['USERNAME']) and (pw == app.config['PASSWORD']):
+            flash('You were successfully logged in', 'info')
+            # Or: session['username'] = request.form['username']
+            resp.set_cookie('username', escape( request.form['username']) )
+        else:
+            flash('You were not successfully logged in', 'danger')
 
         return resp
 
+    ## SHOULD Never Happen, but maybe with a GET
     return render_template('index.html', error="Invalid username/password")
 
 @app.route("/")
