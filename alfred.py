@@ -158,12 +158,6 @@ def index():
     """
     data = { }
 
-    cur = query_db('select * from links order by id desc limit 5')
-    entries = [ dict(c) for c in cur ]
-    for e in entries:
-        e['tags'] = [t for t in re.split(r"[, ]", e['tags']) if t is not '']
-    data['links'] = entries
-
     data['username'] = request.cookies.get('username')
     app.logger.debug('%s accessing /' % (data['username']) )
 
