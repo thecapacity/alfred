@@ -161,7 +161,16 @@ def index():
     data['username'] = request.cookies.get('username')
     app.logger.debug('%s accessing /' % (data['username']) )
 
+    if data['username']:
+        cur = query_db('select * from links order by id desc limit 5')
+        entries = [ dict(c) for c in cur ]
+        for e in entries:
+            e['tags'] = [t for t in re.split(r"[, ]", e['tags']) if t is not '']
+        data['links'] = entries
+    else:
+        entries = None
 
+    data['links'] = entries
     return render_template('index.html', data=data)
 
 if __name__ == "__main__":
