@@ -20,5 +20,13 @@ class Alfred(unittest.TestCase):
         rv = self.app.get('/')
         print rv
 
+    def test_logout(self):
+        with app.test_request_context('/logout', method='POST'):
+            # now you can do something with the request until the
+            # end of the with block, such as basic assertions:
+            assert request.path == '/logout'
+            assert request.method == 'POST'
+            ## Find a way to test for no username
+
 if __name__ == '__main__':
     unittest.main()
