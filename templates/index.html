@@ -15,16 +15,18 @@
 
 {% import 'print_entry.html' as entry %}
 
-<table class="table table-striped table-bordered">
-<tbody> 
+{% if data['links'] %}
+    <table class="table table-striped table-bordered">
+    <tbody> 
 
-    {% for l in data['links'] %}
-        <tr><td>
-        {{ entry.render_entry(l) }}
-        </tr></td>
-    {% endfor %}
+        {% for l in data['links'] %}
+            <tr><td>
+            {{ entry.render_entry(l) }}
+            </tr></td>
+        {% endfor %}
 
-</tbody>
-</table>
+    </tbody>
+    </table>
+{% endif %}
 
 {% endblock results_content %}
