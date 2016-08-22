@@ -21,6 +21,13 @@ app.config.update(dict(
 app.config.from_envvar('FLASKR_SETTINGS', silent=True) # To use, initialize env var to config file
 ### TODO: Implement instance folders; http://flask.pocoo.org/docs/0.11/config/#instance-folders
 
+@app.route('/bookmarklet')
+def srv_bookmarklet():
+    """ Serve bookmarklet
+    """
+
+    return render_template('bookmarklet.js')
+
 ### TODO: Refactor into modules: http://flask.pocoo.org/docs/0.11/patterns/packages/#larger-applications
 def rand_ascii(size=24, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))

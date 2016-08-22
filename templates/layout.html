@@ -47,7 +47,7 @@
                 <span class="navbar-brand">{{ data.username }}</span>
             </div>
                 <button type="submit" class="btn btn-success">Sign Out</button>
-                <a class="glyphicon glyphicon-plus" href="javascript:( function(){if(window.myBookmarklet!==undefined){ myBookmarklet(); } else { document.body.appendChild(document.createElement('script')).src='{{ url_for("static", filename='js/bookmarklet.js?', _external=True) }}'+new Date().getTime(); } })();">+</a>
+                <a class="glyphicon glyphicon-plus" href="javascript:( function(){if(window.myBookmarklet!==undefined){ myBookmarklet(); } else { document.body.appendChild(document.createElement('script')).src='{{ url_for("srv_bookmarklet", _external=True) }}?'+new Date().getTime(); } })();">+</a>
           </form>
         {% else %}
           <form class="navbar-form navbar-right" role="form" method="post" action="/login">
