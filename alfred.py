@@ -94,6 +94,7 @@ def get_db():
 def close_db(error):
     """ Closes the database again at the end of the request
     """
+    ## Added the second os.() check to prevent creating null file
     if hasattr(g, 'sqlite_db') and os.path.isfile( app.config['DATABASE'] ):
         g.sqlite_db.close()
 
