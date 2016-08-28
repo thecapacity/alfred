@@ -5,5 +5,6 @@ create table links (
       url text not null,
       time text not null,
       tags text,
-      comment text 
+      comment text,
+      json_blob text 
 );
