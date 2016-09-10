@@ -71,8 +71,9 @@ def entries():
         return render_template('show_entries.html', entries=entries)
 
     elif request.method == 'POST' or request.method == 'PUT': # Not strictly correct
-        db.execute('insert into links (title, url, time, tags, comment) values (?, ?, ?, ?, ?)',
-                    [ request.form['title'], request.form['url'], datetime.date.today(),
+        db.execute('insert into links (title, private, url, time, tags, comment) values (?, ?, ?, ?, ?, ?)',
+                    [ request.form['title'], request.form['private'],
+                      request.form['url'], time.mktime( time.localtime() ),
                       request.form['tags'], request.form['comment'] ])
         db.commit()
         flash('New entry was successfully posted')
