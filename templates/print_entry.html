@@ -5,7 +5,11 @@
         </h4>
 
         <blockquote class="articleDesc">
-              <p>{{ link.comment }}</p>
+              {% if link.comment %}
+                <p>{{ link.comment }}</p>
+              {% else %}
+                <p></p>
+              {% endif %}
         </blockquote>
 
         <ul class="tagNames list-inline">
