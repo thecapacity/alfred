@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8; indent-tabs-mode: nil; python-indent: 2 -*-
 
+"""From:
+    https://github.com/tibonihoo/wateronmars/blob/master/wom_river/utils/netscape_bookmarks.py
+"""
+
 """Read bookmarks saved in a "Netscape bookmark" format
 as exported by Microsoft Internet Explorer or Delicious.com (and
 initially of course by Netscape).
@@ -42,75 +46,63 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-
 import sys
 import re
 
-
-# The following prefix is not enough to identify a bookmark line (may
-# be a folder with '<H3 FOLDED' for instance), so that the line has to
-# be checked against the RE_BOOKMARK_URL too.
-BOOKMARK_LINE_PREFIX = "<DT>"
-BOOKMARK_NOTE_PREFIX = "<DD>"
-DOCTYPE_LINE = "<!DOCTYPE NETSCAPE-Bookmark-file-1>"
-# Regular expression to extract info about the bookmark
-RE_BOOKMARK_URL = re.compile('HREF="(?P<url>[^"]+)"')
-RE_BOOKMARK_COMPONENTS = {
-  "posix_timestamp" : re.compile('ADD_DATE="(?P<posix_timestamp>\d+)"'),
-  "tags"   : re.compile('TAGS="(?P<tags>[\w,]+)"'),
-  "private": re.compile('PRIVATE="(?P<private>\d)"'),
-  "title"  : re.compile('<A[^>]*>(?P<title>[^<]*)<'),
-  }
-
-
 def parse_netscape_bookmarks(bookmarkHTMFile):
-  """Extract bookmarks and return them in a list of dictionaries formatted in the following way:
-  [ {"url":"http://...", "title":"the title", "private":"0"/"1", "tags":"tag1,tag2,...", "posix_timestamp"="<unix time>", "note":"description"}]
-  Raise a ValueError if the format is wrong.
-  """
-  bookmark_list = []
-  last_line_is_bmk = False
-  correct_doctype_found = False
-  for line in bookmarkHTMFile.splitlines():
-    line = line.lstrip()
-    if line.startswith("<!DOCTYPE NETSCAPE-Bookmark-file-1>"):
-      correct_doctype_found = True
-      continue
-    if line.rstrip() and not correct_doctype_found:
-      raise ValueError("Couldn't find a correct DOCTYPE in the bookmark file (wrong format?)")
-    if not line.rstrip():
-      continue
-    if line.startswith(BOOKMARK_LINE_PREFIX):
-      # we will successively apply the various regexes until we get
-      # all the bookmark's info
-      m = RE_BOOKMARK_URL.search(line)
-      if not m:
-        # No url => skip this line
-        continue
-      bmk = {"url":m.group("url")}
-      for cpnt_name,cpnt_re in RE_BOOKMARK_COMPONENTS.items():
-        m = cpnt_re.search(line)
-        if m: bmk[cpnt_name] = m.group(cpnt_name)
-      bookmark_list.append(bmk)
-      last_line_is_bmk = True
-    elif last_line_is_bmk and line.startswith(BOOKMARK_NOTE_PREFIX):
-      last_line_is_bmk = False
-      bookmark_list[-1]["note"] = line[4:].strip()
-    else:
-      last_line_is_bmk = False
-  return bookmark_list
+    """Extract bookmarks and return them in a list of dictionaries formatted in the following way: [ {"url":"http://...", "title":"the title", "private":"0"/"1", "tags":"tag1,tag2,...", "posix_timestamp"="<unix time>", "note":"description"}]
+        Raise a ValueError if the format is wrong.
+    """
+    BOOKMARK_LINE_PREFIX = "<DT>"
+    BOOKMARK_NOTE_PREFIX = "<DD>"
+
+    # Regular expression to extract info about the bookmark
+    RE_BOOKMARK_URL = re.compile('HREF="(?P<url>[^"]+)"')
+    RE_BOOKMARK_COMPONENTS = {
+        "posix_timestamp" : re.compile('ADD_DATE="(?P<posix_timestamp>\d+)"'),
+        #"tags"   : re.compile('TAGS="(?P<tags>[\w,]+)"'),
+        #"tags"   : re.compile('TAGS="(?P<tags>[\w,\s?]+)"'),
+        "tags"   : re.compile('TAGS="(?P<tags>.*?)"'),
+        "private": re.compile('PRIVATE="(?P<private>\d)"'),
+        "title"  : re.compile('<A[^>]*>(?P<title>[^<]*)<'),
+    }
+
+    bookmark_list = []
+    last_line_is_bmk = False
+    correct_doctype_found = False
+    for line in bookmarkHTMFile.splitlines():
+        line = line.lstrip()
+        if line.startswith("<!DOCTYPE NETSCAPE-Bookmark-file-1>"):
+          correct_doctype_found = True
+          continue
+        if line.rstrip() and not correct_doctype_found:
+          raise ValueError("Couldn't find a correct DOCTYPE in the bookmark file (wrong format?)")
+        if not line.rstrip():
+          continue
+        if line.startswith(BOOKMARK_LINE_PREFIX):
+          # we will successively apply the various regexes until we get
+          # all the bookmark's info
+          m = RE_BOOKMARK_URL.search(line)
+          if not m:
+            # No url => skip this line
+            continue
+          bmk = {"url":m.group("url")}
+          bmk['line'] = line
+          for cpnt_name,cpnt_re in RE_BOOKMARK_COMPONENTS.items():
+            m = cpnt_re.search(line)
+            if m: bmk[cpnt_name] = m.group(cpnt_name)
+          bookmark_list.append(bmk)
+          last_line_is_bmk = True
+        elif last_line_is_bmk and line.startswith(BOOKMARK_NOTE_PREFIX):
+          last_line_is_bmk = False
+          bookmark_list[-1]["note"] = line[4:].strip()
+          bookmark_list[-1]['line'] += line[4:].strip()
+        else:
+          last_line_is_bmk = False
+    return bookmark_list
 
 if __name__ == '__main__':
-  USAGE = """\
-USAGE: netscape_bookmarks.py PRINT bookmarkfilepath.html
-    or netscape_bookmarks.py EXPAND  bookmarkfilepath.html
-In the second case a new file is created called bookmarkfilepath_expanded.html
-"""
-  if len(sys.argv) !=3:
-    print USAGE
-    sys.exit(2)
-  if sys.argv[1]=="PRINT":
-    bookmarks = parse_netscape_bookmarks(open(sys.argv[2], 'r+').read())
+
+    bookmarks = parse_netscape_bookmarks(open(sys.argv[1], 'r+').read())
     print "Found %d bookmarks" % len(bookmarks)
-    for b in bookmarks:
-      print "  - %s: %s (%s)" % (b.get("title","<no title>"), b["url"], b.get("note",""))
+    print bookmarks[0]
