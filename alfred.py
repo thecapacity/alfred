@@ -64,7 +64,7 @@ def query_db(query, args=(), one=False):
 def entries():
 
     if request.method == 'GET':
-        cur = query_db('select * from links order by id desc')
+        cur = query_db('select * from links order by time desc limit 10')
         entries = [ dict(c) for c in cur ]
         for e in entries:
             e['tags'] = [t for t in re.split(r"[, ]", e['tags']) if t is not '']
@@ -210,7 +210,7 @@ def index():
     app.logger.debug('%s accessing /' % (data['username']) )
 
     if data['username']:
-        cur = query_db('select * from links order by id desc limit 5')
+        cur = query_db('select * from links order by time desc limit 5')
         entries = [ dict(c) for c in cur ]
         for e in entries:
             e['tags'] = [t for t in re.split(r"[, ]", e['tags']) if t is not '']
