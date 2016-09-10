@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
+
+### Could do below but changed text_factory for sqlite3 to force utf-8
+#reload(sys)
+#sys.setdefaultencoding('utf8')
+
 import os
 import re
 import datetime
@@ -81,6 +87,8 @@ def connect_db():
     """ Connects to the specific database
     """
     rv = sqlite3.connect(app.config['DATABASE'])
+    #rv.text_factory = str
+    rv.text_factory = lambda x: unicode(x, 'utf-8', 'ignore')
     rv.row_factory = sqlite3.Row
     return rv
 
