@@ -6,6 +6,8 @@ import re
 import datetime
 ## TODO: Use Jinja Filter for template formatting: http://jinja.pocoo.org/docs/dev/api/#custom-filters
 import sqlite3
+from bs4 import BeautifulSoup
+from netscape_bookmarks import parse_netscape_bookmarks
 import json, string, random
 from flask import Flask, flash, jsonify, render_template, request, session, redirect, url_for, make_response, escape, g, abort
 
@@ -97,6 +99,38 @@ def close_db(error):
     ## Added the second os.() check to prevent creating null file
     if hasattr(g, 'sqlite_db') and os.path.isfile( app.config['DATABASE'] ):
         g.sqlite_db.close()
+
+@app.cli.command('import')
+#@app.cli.argument('-n', prompt='filename', help='The filename of the exported delicious.html')
+def importdb_command():
+    """ Imports delicious export into the database.
+    """
+    db = get_db()
+    import_filename = 'delicious(2)-Aug.28.html'
+
+    #with BeautifulSoup( open(import_filename, "r").read(), "html.parser") as old_links:
+    #    pass
+
+    #soup = BeautifulSoup( open(import_filename, "r"), "html.parser" )
+    with open(import_filename, "r") as f:
+        bookmarks = parse_netscape_bookmarks( f.read() )
+
+    app.logger.debug("Found %d bookmarks" % len(bookmarks))
+    for link in bookmarks:
+
+        tags = " ".join( [t for t in re.split(r"[, ]", link['tags']) if t is not ''] )
+
+        if link.get('note', None):
+            link['note'] = link['note'].decode('utf-8')
+        else:
+            link['note'] = None
+
+        data = { 'line': link['line'] }
+
+        db.execute('insert into links (title, private, url, time, tags, comment, json_blob) values (?, ?, ?, ?, ?, ?, ?)', [ link['title'], link['private'], link['url'], link['posix_timestamp'], tags, link['note'], json.dumps( data ) ])
+
+    db.commit()
+    app.logger.debug('Imported links into the database.')
 
 @app.cli.command('initdb')
 def initdb_command():
